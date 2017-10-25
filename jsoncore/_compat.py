@@ -12,3 +12,5 @@ else:
     from StringIO import StringIO
 
 reduce_ = reduce
+
+string_type, text_type = (str, str) if PY3 else (str, unicode)
