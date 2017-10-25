@@ -3,9 +3,8 @@ EXPIRIMENTAL ... UNDER CONSTRUCTION!!!
 """
 from operator import getitem
 
-from .jsoncrawl import node_visitor
-
 from ._compat import suppress, reduce_ as reduce
+from .crawl import node_visitor
 
 
 def jsonget(d, keys, default=None, ignore=(IndexError, KeyError)):
@@ -32,9 +31,9 @@ def jsondel(d, keys, ignore=(IndexError, KeyError)):
         del get_parent(d, keys)[keys[-1]]
 
 
-def jsonvalues(d):
+def jsonvalues(d, ignore=('object', 'array')):
     """Return the value of each node in a JSON document."""
-    return node_visitor(d, lambda x: x.val)
+    return (v for k, v, t in node_visitor(d, lambda x: x) if t not in ignore)
 
 
 def jsonkeys(d):
@@ -42,6 +41,7 @@ def jsonkeys(d):
     return set(node_visitor(d, lambda x: x.keys, element_ch='*'))
 
 
-def jsonitems(d):
+def jsonitems(d, ignore=('object', 'array')):
     """Return a (key, value) pair for each node in a JSON document."""
-    return node_visitor(d, lambda x: (x.keys, x.val))
+    nodes = node_visitor(d, lambda x: x)
+    return ((k, v) for k, v, t in nodes if t not in ignore)
