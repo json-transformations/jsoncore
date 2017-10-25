@@ -1,8 +1,14 @@
-class JsonCutError(Exception):
+class TransformationError(Exception):
     """JSON Cut Base Exception."""
 
 
-class KeyNumberOutOfRange(JsonCutError, ValueError):
+class KeyNumError(TransformationError, ValueError):
     """Invalid Key-Number."""
+
+    pass
+
+
+class RegExError(TransformationError, TypeError):
+    """Invalid Regular Expression."""
 
     pass
