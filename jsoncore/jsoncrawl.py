@@ -48,7 +48,7 @@ def get_children(node, element_char, objects=True, arrays=False):
         else:
             items = enumerate(node.val)
 
-    return [Node(node.keys + [k], v, get_type(v)) for k, v in items]
+    return [Node(node.keys + (k,), v, get_type(v)) for k, v in items]
 
 
 def node_visitor(d, process_node, objects=True, arrays=False, element_ch=None):
@@ -71,7 +71,7 @@ def node_visitor(d, process_node, objects=True, arrays=False, element_ch=None):
         Replaces sequence index numbers with this character when set;
         if not visit_arrays then ignore this option.
     """
-    first_node = Node(keys=[], val=d, dtype=get_type(d))
+    first_node = Node(keys=(), val=d, dtype=get_type(d))
     to_crawl = deque([first_node])
     while to_crawl:
         node = to_crawl.popleft()
