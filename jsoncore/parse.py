@@ -4,16 +4,19 @@ from collections import namedtuple
 
 from ._compat import StringIO, suppress
 from .core import jsonkeys
-from .errors import KeyNumberOutOfRange
+from .errors import RegExError, KeyNumError
 
 
 REGEXES = {
     'unescaped_dot': r'(?<!\\)\.',
     'unescaped_colon': r'(?<!\\):',
-    'number_range':  r'[-\d]+$'
+    'number_range':  r'[-\d]+$',
+    'regex_pattern': r'/.*/$'
 }
 RegEx = namedtuple('RegEx', REGEXES.keys())
 REGEX = RegEx(*map(re.compile, REGEXES.values()))
+
+ESCAPED_CHARS = '.:/'
 
 csv.register_dialect(
     'Keys',
@@ -44,12 +47,15 @@ def is_slice(token):
     return False
 
 
+def is_regex(token):
+    """Is the token a regular expression pattern?"""
+    return bool(REGEX.regex_pattern(token))
+
+
 def parse_name(token):
     """Parse key name; return keylist."""
     keys = REGEX.unescaped_dot.split(token.lstrip('.'))
-    keys = (i.replace('\\.', '.') for i in keys)
-    keys = (i.replace('\\:', ':') for i in keys)
-    return keys
+    return (k.replace('\\' + c, c) for k in keys for c in ESCAPED_CHARS)
 
 
 def parse_index(token):
@@ -70,12 +76,21 @@ def parse_number(token, items):
         if any(i for i in endpts if not (i is None or 0 < i <= len(items))):
             raise ValueError
     except ValueError:
-        raise KeyNumberOutOfRange(token)
+        raise KeyNumError(token)
     if endpts[0] is not None:
         endpts[0] -= 1
     if len(endpts) == 1:
         endpts = (endpts[0], endpts[0] + 1)
     return [parse_name(i) for i in items[slice(*endpts)]]
+
+
+def parse_regex(token, items):
+    """Parse regular expression syntax."""
+    try:
+        regex = re.compile(token.strip('/'))
+    except re.error as e:
+        raise RegExError(token)
+    return [parse_name(i) for i in items if regex.match(i)]
 
 
 def parse_key(token):
@@ -89,6 +104,10 @@ def parse_key(token):
         elif is_slice(key):
             # a slice object
             yield parse_slice(key)
+
+        elif is_regex(key):
+            # a RegEx pattern
+            yield parse_regex(key)
 
         # a string
         yield parse_name(key)
