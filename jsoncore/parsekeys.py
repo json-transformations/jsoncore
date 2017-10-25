@@ -3,7 +3,7 @@ import re
 from collections import namedtuple
 
 from ._compat import StringIO, suppress
-from .core import get_keys
+from .core import jsonkeys
 from .errors import KeyNumberOutOfRange
 
 
@@ -124,5 +124,5 @@ def parse_keylist(s, data=None, quotechar='"', keys=None):
     tokens = parse_csv(s, quotechar)
     if any(REGEX.number_range.match(i) for i in tokens):
         if keys is None:
-            keys = sorted(get_keys(data))
+            keys = sorted(jsonkeys(data))
     return list(parse_keys(tokens, keys))
