@@ -13,16 +13,16 @@ SAMPLE_DATA = {
 
 
 def test_get_value_missing_key():
-    assert get_value(SAMPLE_DATA, ['missing', 'key']) is None
+    assert get_value(SAMPLE_DATA, ('missing', 'key')) is None
 
 
 def test_get_value_index_out_of_range():
-    assert get_value(SAMPLE_DATA, ['asteroids', 8]) is None
+    assert get_value(SAMPLE_DATA, ('asteroids', 8)) is None
 
 
 def test_get_value_type_error():
-    assert get_value(SAMPLE_DATA, ['source', 8]) is None
-    assert get_value(SAMPLE_DATA, ['asteriod', 'name']) is None
+    assert get_value(SAMPLE_DATA, ('source', 8)) is None
+    assert get_value(SAMPLE_DATA, ('asteriod', 'name')) is None
 
 
 def test_get_value_key_names():
@@ -30,23 +30,24 @@ def test_get_value_key_names():
 
 
 def test_get_value_index_number():
-    assert get_value(SAMPLE_DATA, ('asteroids', '0', 'name')) == 'Ryugu'
+    assert get_value(SAMPLE_DATA, ('asteroids', 0, 'name')) == 'Ryugu'
 
 
 def test_get_value_slice():
-    expect = SAMPLE_DATA['asteroids'][1:]
-    assert get_value(SAMPLE_DATA, ('asteroids', '1:')) == expect
+    result = get_value(SAMPLE_DATA, ('asteroids', slice(1, None)))
+    assert result == SAMPLE_DATA['asteroids'][1:]
 
-    expect = SAMPLE_DATA['asteroids'][:2]
-    assert get_value(SAMPLE_DATA, ('asteroids', ':2')) == expect
+    result = get_value(SAMPLE_DATA, ('asteroids', slice(None, 2)))
+    assert result == SAMPLE_DATA['asteroids'][:2]
 
     expect = SAMPLE_DATA['asteroids'][1:2]
-    assert get_value(SAMPLE_DATA, ('asteroids', '1:2')) == expect
+    assert get_value(SAMPLE_DATA, ('asteroids', slice(1, 2))) == expect
 
-    expect = SAMPLE_DATA['asteroids'][::2]
-    assert get_value(SAMPLE_DATA, ('asteroids', '::2')) == expect
+    result = get_value(SAMPLE_DATA, ('asteroids', slice(None, None, 2)))
+    assert result == SAMPLE_DATA['asteroids'][::2]
 
 
 def test_get_value_slice_in_middle():
-    assert get_value(SAMPLE_DATA, ('asteroids', ':2', 'name')) is None
+    result = get_value(SAMPLE_DATA, ('asteroids', slice(1, 2), 0, 'name'))
+    assert result == '1989 ML'
 
