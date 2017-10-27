@@ -1,10 +1,12 @@
 """
 EXPIRIMENTAL ... UNDER CONSTRUCTION!!!
 """
+from collections import defaultdict
 from operator import getitem
 
 from ._compat import suppress, reduce_ as reduce
 from .crawl import node_visitor
+from .types import IDENTITY, get_min_max
 
 
 def jsonget(d, keys, default=None, ignore=(IndexError, KeyError)):
@@ -45,3 +47,14 @@ def jsonitems(d, ignore=('object', 'array')):
     """Return a (key, value) pair for each node in a JSON document."""
     nodes = node_visitor(d, lambda x: x)
     return ((k, v) for k, v, t in nodes if t not in ignore)
+
+
+def jsontypes(d):
+    return reduce(get_min_max, node_visitor(d, IDENTITY), defaultdict(dict))
+
+
+'''
+def jsoncount(d):
+    return {keystrings(n): len(n.val) for n in node_visitor(d, IDENTITY)
+            if n.dtype == 'array'}
+'''

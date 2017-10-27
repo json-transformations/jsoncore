@@ -20,24 +20,7 @@ JSON_TYPES = {
 }
 
 
-def get_min_max(keys, node):
-    """Determine the JSON value type."""
-    types = keys.get(node.keys, {})
-    values = types.get(node.dtype)
-    result = JSON_TYPES[node.dtype][-1](node.val)
-    if values is None or True in values:
-        min_ = max_ = result
-    else:
-        min_, max_ = min(values.min, result), max(values.max, result)
-    keys[node.keys][node.dtype] = MinMax(min_, max_)
-    return keys
-
-
-def jsontypes(d, ):
-    return reduce(get_min_max, node_visitor(d, IDENTITY), defaultdict(dict))
-
-
-def format_result(d, colors=('white', 'cyan')):
+def format_types(d, colors=('white', 'cyan')):
     """Format & colorize the node type info."""
     def fmt_type(dtype, values):
         """Format the JSON type."""
@@ -54,15 +37,30 @@ def format_result(d, colors=('white', 'cyan')):
 
     d = sorted(d.items())
     keys, values = ['.'.join(k) for k, v in d], [v for k, v in d]
-    padding = len(max(keys(), key=len))
-    keys = (i.ljust(padding) for i in keys)
-    values = (' | '.join(fmt_type(*i) for i in d.items()) for d in values)
-    if colors:
-        keys = (click.style(i, fg=colors[0]) for i in keys)
-        values = (click.style(i, fg=colors[1]) for i in values)
-    for key, val in zip(keys, values):
-        yield key + ' :' + val
+    return zip(keys, values)
 
+
+def get_min_max(keys, node):
+    """Determine the JSON value type."""
+    types = keys.get(node.keys, {})
+    values = types.get(node.dtype)
+    result = JSON_TYPES[node.dtype][-1](node.val)
+    if values is None or True in values:
+        min_ = max_ = result
+    else:
+        min_, max_ = min(values.min, result), max(values.max, result)
+    keys[node.keys][node.dtype] = MinMax(min_, max_)
+    return keys
+
+'''
+def get_types(d):
+    return reduce(get_min_max, node_visitor(d, IDENTITY), defaultdict(dict))
+
+
+def jsontypes(d):
+    for line in format_result(get_types(d)):
+        print(line)
+'''
 
 '''
 def format_counts(d, nocolor=False, keys_fg='cyan', vals_fg='white'):
