@@ -50,11 +50,11 @@ def jsonitems(d, ignore=('object', 'array')):
 
 
 def jsontypes(d):
+    """List data type, min & max values for each node in JSON document."""
     return reduce(get_min_max, node_visitor(d, IDENTITY), defaultdict(dict))
 
 
-'''
-def jsoncount(d):
-    return {keystrings(n): len(n.val) for n in node_visitor(d, IDENTITY)
-            if n.dtype == 'array'}
-'''
+def jsoncounts(d):
+    """List the length of each array in a JSON document."""
+    return (('.'.join(n.keys), len(n.val)) for n in node_visitor(d, IDENTITY)
+            if n.dtype == 'array')
