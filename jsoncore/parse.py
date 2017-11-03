@@ -49,7 +49,7 @@ def is_slice(token):
 
 def is_regex(token):
     """Is the token a regular expression pattern?"""
-    return bool(REGEX.regex_pattern(token))
+    return bool(REGEX.regex_pattern.match(token))
 
 
 def parse_name(token):
