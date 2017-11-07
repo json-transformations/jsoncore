@@ -10,7 +10,6 @@ from operator import eq, getitem
 from toolz import curry, last
 
 from .core import SUPPRESS, WILDCARD
-from .sequence import Items
 
 eq = curry(eq)
 
@@ -106,26 +105,20 @@ def group_arrays(keys):
     return sorted(groups, key=lambda x: len(x[0]), reverse=True)
 
 
-def apply_funct(funct, arrays, data):
-    num_arrays = len(arrays)
-    import pdb; pdb.set_trace()
-    if num_arrays == 0:
-        return funct(data)
-
-    value = get_value(arrays[0], data)
-    if num_arrays == 1:
-        return funct(value)
-
-    if num_arrays == 2:
-        return funct(value, keys=arrays[1])
-
-    del arrays[-2]
-    result = []
-    for i in value:
-        result.append(apply_funct(funct, arrays, i))
-    return result
+def apply_funct(funct, groups, array, keys, data):
+    if groups:
+        return [apply_funct(funct, groups[1:], array, keys, i)
+                for i in get_value(groups[0], data)]
+    if array:
+        return funct(keys, get_value(array, data))
+    return funct(keys, data)
 
 
-def apply_keys(keys, keymap, funct, data):
-    for group in group_arrays(keys):
-        set_value(keymap[group], apply_funct(funct, group, data))
+def apply_keys(keys, funct, data):
+    groups = group_arrays(keys)
+    for group in groups:
+        array_groups, array, keys = group[0][:-1], group[0][-1], group[-1:][0]
+        value = apply_funct(funct, array_groups, array, keys, data)
+        key = array_groups[0] if array_groups else array
+        set_value(data, key, value)
+    return data
