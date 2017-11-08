@@ -3,7 +3,7 @@ import re
 from collections import namedtuple
 
 from ._compat import StringIO, suppress
-from .core import jsonkeys
+# from .jsonfuncts import jsonkeys
 from .errors import RegExError, KeyNumError
 
 

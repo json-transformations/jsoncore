@@ -1,4 +1,4 @@
-from jsoncore.core import jsonvalues
+from jsoncore.jsonfuncts import jsonvalues
 
 SAMPLE_DATA = [
     {"name": "Ryugu", "type": "Cg", "value $": 82760000000},

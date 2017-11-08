@@ -1,4 +1,4 @@
-from jsoncore.core import jsonkeys
+from jsoncore.jsonfuncts import jsonkeys
 
 SAMPLE_DATA = {
   "source": {
@@ -26,5 +26,4 @@ EXPECTED_RESULT = {
 
 def test_jsonkeys():
     result = jsonkeys(SAMPLE_DATA)
-    print(result)
     assert result == EXPECTED_RESULT

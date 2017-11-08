@@ -18,28 +18,28 @@ SAMPLE_DATA = {
 
 def test_set_value_missing_key():
     d = deepcopy(SAMPLE_DATA)
-    set_value(d, ('missing', 'key'), True)
+    set_value(('missing', 'key'), True, d)
     assert d == SAMPLE_DATA
 
 
 def test_set_value_index_out_of_range():
     d = deepcopy(SAMPLE_DATA)
-    set_value(d, ('asteroids', 8), {})
+    set_value(('asteroids', 8), {}, d)
     assert d == SAMPLE_DATA
 
 
 def test_set_value_type_error():
     d = deepcopy(SAMPLE_DATA)
-    set_value(d, ('source', 8), 'test')
+    set_value(('source', 8), 'test', d)
     assert d['source'][8] == 'test'
 
     with pytest.raises(TypeError):
-        set_value(d, ('asteroids', 'name'), 'test')
+        set_value(('asteroids', 'name'), 'test', d)
 
 
 def test_set_value_names():
     d1 = deepcopy(SAMPLE_DATA)
-    set_value(d1, ('source', 'name'), 'test')
+    set_value(('source', 'name'), 'test', d1)
     assert d1['source']['name'] == 'test'
 
     d2 = deepcopy(SAMPLE_DATA)
@@ -49,7 +49,7 @@ def test_set_value_names():
 
 def test_set_value_index_number():
     d1 = deepcopy(SAMPLE_DATA)
-    set_value(d1, ('asteroids', 0, 'name'), 'test')
+    set_value(('asteroids', 0, 'name'), 'test', d1)
     assert d1['asteroids'][0]['name'] == 'test'
 
     d2 = deepcopy(SAMPLE_DATA)
@@ -59,7 +59,7 @@ def test_set_value_index_number():
 
 def test_get_value_slice():
     d1 = deepcopy(SAMPLE_DATA)
-    set_value(d1, ('asteroids', slice(1, None)), ['test'])
+    set_value(('asteroids', slice(1, None)), ['test'], d1)
     assert len(d1['asteroids']) == 2
     assert d1['asteroids'][1] == 'test'
 
@@ -68,7 +68,7 @@ def test_get_value_slice():
     assert d1 == d2
 
     d1 = deepcopy(SAMPLE_DATA)
-    set_value(d1, ('asteroids', slice(None, 2)), ['test'])
+    set_value(('asteroids', slice(None, 2)), ['test'], d1)
     assert len(d1['asteroids']) == 2
     assert d1['asteroids'][0] == 'test'
 
@@ -77,7 +77,7 @@ def test_get_value_slice():
     assert d1 == d2
 
     d1 = deepcopy(SAMPLE_DATA)
-    set_value(d1, ('asteroids', slice(1, 2)), ['test'])
+    set_value(('asteroids', slice(1, 2)), ['test'], d1)
     assert len(d1['asteroids']) == 3
     assert d1['asteroids'][1] == 'test'
 
@@ -86,7 +86,7 @@ def test_get_value_slice():
     assert d1 == d2
 
     d1 = deepcopy(SAMPLE_DATA)
-    set_value(d1, ('asteroids', slice(None, None, 2)), ['test1', 'test2'])
+    set_value(('asteroids', slice(None, None, 2)), ['test1', 'test2'], d1)
     assert len(d1['asteroids']) == 3
     assert d1['asteroids'][0] == 'test1'
 
@@ -97,7 +97,7 @@ def test_get_value_slice():
 
 def test_get_value_slice_in_middle():
     d1 = deepcopy(SAMPLE_DATA)
-    set_value(d1, ('asteroids', slice(1, 2), 0, 'name'), 'test')
+    set_value(('asteroids', slice(1, 2), 0, 'name'), 'test', d1)
 
     d2 = deepcopy(SAMPLE_DATA)
     d2['asteroids'][1:2][0]['name'] = 'test'
