@@ -13,10 +13,13 @@
 from collections import Sequence
 from copy import deepcopy
 
+from ._compat import string_type, text_type
 
-def is_sequence_and_not_str(obj):
+
+def is_seq_and_not_str(obj):
     """Exclude strings when determining whether an object is a Sequence."""
-    return isinstance(obj, Sequence) and not isinstance(obj, str)
+    return (isinstance(obj, Sequence) and
+            not isinstance(obj, (string_type, text_type)))
 
 
 class Items(object):
@@ -25,7 +28,7 @@ class Items(object):
     def __init__(self, obj):
         """Wrap a string or non-Sequence in a list."""
         self.items = deepcopy(obj)
-        self.is_str_or_not_sequence = not is_sequence_and_not_str(obj)
+        self.is_str_or_not_sequence = not is_seq_and_not_str(obj)
         if self.is_str_or_not_sequence:
             self.items = [self.items]
 
