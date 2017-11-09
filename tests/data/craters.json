@@ -1,0 +1,68 @@
+{
+  "Solar System": {
+    "planets": [
+      {
+        "name": "Mars",
+        "moons": [
+          {
+            "name": "Phobos",
+            "craters": [
+              {
+                "name": "Clustril",
+                "diameter (km)": 3.4
+              },
+              {
+                "name": "D'Arrest",
+                "diameter (km)": 2.1
+              }
+            ]
+          },
+          {
+            "name": "Deimos",
+            "craters": [
+              {
+                "name": "Swift",
+                "diameter (km)": 1
+              },
+              {
+                "name": "Voltaire",
+                "diameter (km)": 1.9
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Jupiter",
+        "moons": [
+          {
+            "name": "Amalthea",
+            "craters": [
+              {
+                "name": "Gaea",
+                "diameter (km)": 80
+              },
+              {
+                "name": "Pan",
+                "diameter (km)": 100
+              }
+            ]
+          },
+          {
+            "name": "Callisto",
+            "craters": [
+              {
+                "name": "Adal",
+                "diameter (km)": 41.7
+              },
+              {
+                "name": "Aegir",
+                "diameter (km)": 53.9
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
