@@ -113,7 +113,7 @@ def map_items(keys, funct, seq):
 def map_values(keys, funct, seq):
     """Apply function to values in a JSON document."""
     def apply_funct(key, d):
-        return set_value(key, funct(get_value(key, d)))
+        return set_value(key, funct(get_value(key, d)), d)
 
     return map_items(keys, apply_funct, seq)
 
