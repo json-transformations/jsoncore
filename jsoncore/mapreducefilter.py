@@ -2,18 +2,16 @@
 
 Includes support across nested multiple dimensional arrays.
 """
-from contextlib import suppress
+from collections import namedtuple
+from copy import deepcopy
+from functools import partial
 from itertools import groupby
-from operator import eq, getitem
-
-from toolz import curry, last
+from operator import eq
 
 from jsoncrawl import node_visitor
 
 from ._compat import map, reduce, filter, filterfalse
-from .core import SUPPRESS, WILDCARD, del_key, get_value, set_value
-
-eq = curry(eq)
+from .core import WILDCARD, del_key, get_value, set_value
 
 JSON_TYPES = {
     dict: 'object',
@@ -24,6 +22,8 @@ JSON_TYPES = {
     bool: 'boolean',
     type(None): 'null'
 }
+
+ArrayKeys = namedtuple('ArrayKeys', ['arrays', 'keys'])
 
 
 def get_key(keys, fullpath=False):
@@ -36,18 +36,19 @@ def get_type(value):
 
 def splitlist(s, sep=WILDCARD):
     """Break a list into lists split at separators."""
-    return [list(g) for k, g in groupby(s, eq(sep)) if not k]
+    return [list(g) for k, g in groupby(s, partial(eq, sep)) if not k]
 
 
-def group_arrays(keys):
-    """Split a keylist groups of keys for each array.
+def group_array_keys(keys):
+    """Groups JSON selectors into arrays & keys.
 
-    Each keylist is split into tuples:
-    1st element - A list of keys pointing to arrays in order of depth.
-    2nd element - A group of keys referenced by the last array.
+    ArrayKeys tuple:
+        1: Split key list into arrays
+        2: Group keys by array
 
-    Sorts top-down by number of arrays found.
+    Sorts ArrayKeys by number of arrays; descending order.
 
+    Example:
     >>> keys = [
         ['solar system', 'planets', 'number'],
         ['sun', 'planets', '*', 'moons', '*', 'craters', '*', 'name'],
@@ -59,41 +60,53 @@ def group_arrays(keys):
     def all_but_last(keys):
         return tuple(keys)[:-1]
 
-    groups = groupby(map(splitlist, keys), all_but_last)
-    groups = ((k, tuple(map(last, g))) for k, g in groups)
-    return sorted(groups, key=lambda x: len(x[0]), reverse=True)
+    def array_count(group):
+        return len(group.arrays)
+
+    def key_list(group):
+        return tuple(g[-1] for g in group)
+
+    arrays = map(splitlist, keys)
+    groups = groupby(arrays, all_but_last)
+    array_keys = (ArrayKeys(k, key_list(g)) for k, g in groups)
+    return sorted(array_keys, key=array_count, reverse=True)
 
 
-def apply_funct(funct, groups, array, keys, data):
-    """Apply a function to a list of keys inside a JSON document.
+def key_funct(funct, arrays_to_crawl, last_array, keys, d):
+    """Apply a function to a JSON Selector.
 
-    Allows a function to be applied to a given list of selectors
-    throuhout a JSON document; supports nested arrays & objects.
+    Applies a function to a given list of selectors throuhout a JSON
+    document; supports nested arrays & objects.
     """
-    if groups:
-        items = [apply_funct(funct, groups[1:], array, keys, i)
-                 for i in get_value(groups[0], data)]
-        return set_value(groups[0], items, data)
+    if arrays_to_crawl:
+        this_array = arrays_to_crawl[0]
+        to_crawl = arrays_to_crawl[1:]
+        items = [key_funct(funct, to_crawl, last_array, keys, i)
+                 for i in get_value(this_array, d)]
+        return set_value(this_array, items, d)
 
-    if array:
-        items =  funct(keys, get_value(array, data))
-        return set_value(array, items, data)
+    if last_array:
+        items = funct(keys, get_value(last_array, d))
+        return set_value(last_array, items, d)
 
-    return funct(keys, data)
+    # it's not an array; just keys
+    return funct(keys, d)
 
-def apply_keys(keys, funct, data):
-    groups = group_arrays(keys)
-    for group in groups:
-        array_groups, array, keys = group[0][:-1], group[0][-1], group[-1:][0]
-        data = apply_funct(funct, array_groups, array, keys, data)
+
+def apply_funct(keys, funct, d):
+    """Apply a function to one or more JSON Selectors."""
+    data = deepcopy(d)
+    for group in group_array_keys(keys):
+        arrays = list(group.arrays)
+        last_array = arrays.pop()
+        data = key_funct(funct, arrays, last_array, group.keys, data)
     return data
 
 
 def map_items(keys, funct, seq):
     """Apply function to items in a JSON document given a set of keys."""
-    fn = curry(funct)
     for key in keys:
-        seq = map(fn(key), seq)
+        seq = map(partial(funct, key), seq)
     return list(seq)
 
 
@@ -116,10 +129,9 @@ def map_keys(keys, funct, seq):
 
 def filter_items(keys, funct, seq, on_false=False):
     """Apply function to items in a JSON document."""
-    funct = curry(funct)
     filter = filterfalse if on_false else filter
     for key in keys:
-        seq = filter(funct(key), seq)
+        seq = filter(partial(funct, key), seq)
     return list(seq)
 
 
@@ -144,9 +156,8 @@ def filter_keys(keys, funct, seq, on_false=False):
 
 def reduce_items(keys, funct, seq):
     """Reduce key, value pairs in a JSON document."""
-    funct = curry(funct)
     for key in keys:
-        seq = reduce(funct(key), seq)
+        seq = reduce(partial(funct, key), seq)
     return list(seq)
 
 

@@ -1,5 +1,6 @@
-from jsoncore.mapfilter import (apply_funct, apply_keys, group_arrays,
-                                map_values, splitlist)
+from jsoncore.mapreducefilter import (
+    apply_funct, group_array_keys, key_funct, splitlist
+)
 from jsoncore.core import get_value, set_value
 
 
@@ -11,7 +12,7 @@ def test_splitlist():
     assert result == expect
 
 
-def test_group_arrays():
+def test_group_array_keys():
     data = [
         ['Solar System', 'planets', 'number'],
         ['Solar System', 'planets', '*', 'moons', '*', 'craters', '*', 'name'],
@@ -19,11 +20,11 @@ def test_group_arrays():
     expect = [(
         (['Solar System', 'planets'], ['moons'], ['craters']),
         (['name'], ['size'])), ((), (['Solar System', 'planets', 'number'],))]
-    result = group_arrays(data)
+    result = group_array_keys(data)
     assert result == expect
 
 
-def test_apply_funct():
+def test_key_funct():
     def map_values(keys, funct, seq):
         def apply_funct2keys(item):
             for key in keys:
@@ -79,11 +80,11 @@ def test_apply_funct():
     groups = [('Solar System', 'planets'), ('moons',)]
     array = ('craters',)
     keys = [('name',)]
-    result = apply_funct(capitalize, groups, array, keys, data)
+    result = key_funct(capitalize, groups, array, keys, data)
     assert result == expect
 
 
-def test_apply_keys():
+def test_apply_funct():
 
     data = {"Solar System": {"planets": [{"name": "Mars", "moons": [{"name":
         "Phobos", "craters": [{"name": "Clustril", "diameter (km)": 3.4},
@@ -107,7 +108,6 @@ def test_apply_keys():
         'name'], ['Solar System', 'planets', '*', 'moons', '*', 'name'],
         ['Solar System', 'planets', '*', 'name']]
 
-
     def map_values(keys, funct, seq):
         def apply_funct2keys(item):
             for key in keys:
@@ -119,6 +119,5 @@ def test_apply_keys():
     def capitalize(keys, data):
         return map_values(keys, str.upper, data)
 
-    result = apply_keys(keys, capitalize, data)
-    print(result)
+    result = apply_funct(keys, capitalize, data)
     assert result == expect
