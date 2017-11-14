@@ -123,8 +123,6 @@ def map_values(keys, funct, seq):
         return set_value(key, funct(get_value(key, d)), d)
 
     def valmap(keys, seq):
-        # if not keys:
-        #    import pdb; pdb.set_trace()
         for key in keys or node_visitor(seq, lambda x: x.keys, arrays=True):
             seq = map(partial(set_item, key, funct), seq)
         return list(seq)
@@ -132,6 +130,7 @@ def map_values(keys, funct, seq):
     return apply_funct(keys, valmap, seq)
 
 
+'''
 def map_keys(keys, funct, seq):
     """Apply function to specified keys in a JSON document."""
     def apply_funct(key, d):
@@ -187,3 +186,4 @@ def reduce_keys(keys, funct, seq):
         return funct(key)
 
     return reduce_items(keys, apply_funct, seq)
+'''
