@@ -18,7 +18,7 @@ def get_value(keys, d, default=None, ignore=SUPPRESS):
 
 def get_item(keys, d, default=None, fullpath=False, ignore=SUPPRESS):
     """Get a key/value pari from a JSON document given a list of keys."""
-    key = '.'.join(keys) if fullpath else keys[:-1]
+    key = '.'.join(map(str, keys)) if fullpath else keys[-1]
     with suppress(*ignore):
         value = get_value(keys, d, default=default, ignore=ignore)
         return key, value
