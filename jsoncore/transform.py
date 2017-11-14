@@ -1,3 +1,4 @@
+'''
 class JSONDict(object):
     """Access to environment variables using attribute-style notation."""
 
@@ -76,3 +77,4 @@ class JSONDict(object):
     __getitem__ = __getattr__
     __setitem__ = __setattr__
     __delitem__ = __delattr__
+'''
