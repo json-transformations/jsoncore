@@ -33,9 +33,6 @@ def test_set_value_type_error():
     set_value(('source', 8), 'test', d)
     assert d['source'][8] == 'test'
 
-    with pytest.raises(TypeError):
-        set_value(('asteroids', 'name'), 'test', d)
-
 
 def test_set_value_names():
     d1 = deepcopy(SAMPLE_DATA)

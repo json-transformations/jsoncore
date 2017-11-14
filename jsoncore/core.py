@@ -5,7 +5,7 @@ from operator import getitem
 
 from ._compat import suppress, reduce
 
-SUPPRESS = (IndexError, KeyError)
+SUPPRESS = (IndexError, KeyError, TypeError)
 WILDCARD = '*'
 
 
