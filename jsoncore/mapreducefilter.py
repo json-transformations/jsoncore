@@ -10,7 +10,7 @@ from operator import eq
 
 from jsoncrawl import node_visitor
 
-from ._compat import map, reduce, filter, filterfalse
+from ._compat import map, reduce, filter, filterfalse, suppress
 from .core import WILDCARD, del_key, get_value, set_value
 
 JSON_TYPES = {
@@ -22,6 +22,7 @@ JSON_TYPES = {
     bool: 'boolean',
     type(None): 'null'
 }
+SUPPRESS = Exception
 
 ArrayKeys = namedtuple('ArrayKeys', ['arrays', 'keys'])
 
@@ -72,7 +73,13 @@ def group_array_keys(keys):
     return sorted(array_keys, key=array_count, reverse=True)
 
 
-def key_funct(funct, arrays_to_crawl, last_array, keys, d):
+def do_funct(funct, keys, d, ignore=(Exception,)):
+    with suppress(*ignore):
+        return funct(keys, d)
+    return d
+
+
+def key_funct(funct, arrays_to_crawl, last_array, keys, d, ignore=SUPPRESS):
     """Apply a function to a JSON Selector.
 
     Applies a function to a given list of selectors throuhout a JSON
@@ -86,36 +93,43 @@ def key_funct(funct, arrays_to_crawl, last_array, keys, d):
         return set_value(this_array, items, d)
 
     if last_array:
-        items = funct(keys, get_value(last_array, d))
+        items = do_funct(funct, keys, get_value(last_array, d))
         return set_value(last_array, items, d)
 
     # it's not an array; just keys
-    return funct(keys, d)
+    return do_funct(funct, keys, d)
 
 
-def apply_funct(keys, funct, d):
+def apply_funct(keys, funct, d, ignore=SUPPRESS):
     """Apply a function to one or more JSON Selectors."""
     data = deepcopy(d)
     for group in group_array_keys(keys):
         arrays = list(group.arrays)
-        last_array = arrays.pop()
-        data = key_funct(funct, arrays, last_array, group.keys, data)
+        last_array = arrays.pop() if arrays else None
+        data = key_funct(funct, arrays, last_array, group.keys, data, ignore)
     return data
 
 
-def map_items(keys, funct, seq):
+def map_item(keys, funct, item):
     """Apply function to items in a JSON document given a set of keys."""
     for key in keys:
-        seq = map(partial(funct, key), seq)
+        seq = map(partial(funct, key), item)
     return list(seq)
 
 
 def map_values(keys, funct, seq):
     """Apply function to values in a JSON document."""
-    def apply_funct(key, d):
+    def set_item(key, funct, d):
         return set_value(key, funct(get_value(key, d)), d)
 
-    return map_items(keys, apply_funct, seq)
+    def valmap(keys, seq):
+        # if not keys:
+        #    import pdb; pdb.set_trace()
+        for key in keys or node_visitor(seq, lambda x: x.keys, arrays=True):
+            seq = map(partial(set_item, key, funct), seq)
+        return list(seq)
+
+    return apply_funct(keys, valmap, seq)
 
 
 def map_keys(keys, funct, seq):
