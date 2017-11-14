@@ -1,4 +1,5 @@
 jsoncrawl
+pytoolz
 click==6.7
 contextlib2==0.5.5
 pytest-cov
