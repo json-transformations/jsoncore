@@ -38,8 +38,8 @@ def test_key_number_out_of_range():
         keys = '2'
         data = ['i1']
         result = parse_number(keys, data)
+        expect = [('i1',)]
         assert result == expect
-
 
 
 def test_parse_key_number():
