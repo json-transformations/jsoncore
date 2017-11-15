@@ -1,7 +1,4 @@
-jsoncrawl
-pytoolz
-click==6.7
-contextlib2==0.5.5
-pytest-cov
-flake8
-tox
+pytest-cov==2.5.1
+flake8==3.5.0
+tox==2.9.1
+
