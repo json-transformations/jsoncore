@@ -1,10 +1,10 @@
 from functools import wraps
 
 from toolz import curry
-
 from jsoncrawl import node_visitor
 
-from .core import WILDCARD, del_key, get_value, get_item, set_value
+from .core import WILDCARD, del_key
+
 from .parse import parse_keys
 from .sequence import is_seq_and_not_str
 
@@ -33,6 +33,7 @@ def jsondel(keys, *args, **kwds):
     del_key(keys, *args, **kwds)
 
 
+'''
 @curry
 @parse_keystr
 def jsonget(keys, *args, **kwds):
@@ -55,6 +56,7 @@ def jsonitems(d, arrays=True, ignore=('object', 'array')):
     """Return a (key, value) pair for each node in a JSON document."""
     nodes = node_visitor(d, lambda x: x, arrays=arrays)
     return ((k, v) for k, v, t in nodes if t not in ignore)
+'''
 
 
 def jsonvalues(d, arrays=True, ignore=('object', 'array')):
@@ -73,7 +75,9 @@ jsonitemfilter
 jsonvalreduce
 jsonkeyreduce
 jsonitemreduce
+'''
 
+'''
 def jsontypes(d, all_=True):
     """List data type, min & max values for each node in JSON document."""
     visitor = node_visitor(d, IDENTITY, arrays=all_, element_ch=WILDCARD)
