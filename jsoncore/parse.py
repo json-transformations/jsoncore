@@ -3,7 +3,7 @@ import re
 from collections import namedtuple
 
 from ._compat import StringIO, suppress
-# from .jsonfuncts import jsonkeys
+from .keys import jsonkeys
 from .errors import RegExError, KeyNumError
 
 
@@ -16,7 +16,7 @@ REGEXES = {
 RegEx = namedtuple('RegEx', REGEXES.keys())
 REGEX = RegEx(*map(re.compile, REGEXES.values()))
 
-ESCAPED_CHARS = '.:/'
+ESCAPED_CHARS = '.:\\'
 
 csv.register_dialect(
     'Keys',
@@ -54,8 +54,9 @@ def is_regex(token):
 
 def parse_name(token):
     """Parse key name; return keylist."""
-    keys = REGEX.unescaped_dot.split(token.lstrip('.'))
-    return (k.replace('\\' + c, c) for k in keys for c in ESCAPED_CHARS)
+    for esc_ch in ESCAPED_CHARS:
+        token = token.replace('\\' + esc_ch, esc_ch)
+    return token
 
 
 def parse_index(token):
@@ -64,26 +65,12 @@ def parse_index(token):
         return int(token.lstrip('.'))
 
 
-def parse_slice(token, items):
+def parse_slice(token):
     """Parse slice syntax."""
     return slice(*map(parse_index, token.split(':')))
 
 
-def parse_number(token, items):
-    """Parse key item number or range of numbers."""
-    try:
-        endpts = [parse_index(i) for i in token.split('-', 1)]
-        if any(i for i in endpts if not (i is None or 0 < i <= len(items))):
-            raise ValueError
-    except ValueError:
-        raise KeyNumError(token)
-    if endpts[0] is not None:
-        endpts[0] -= 1
-    if len(endpts) == 1:
-        endpts = (endpts[0], endpts[0] + 1)
-    return [parse_name(i) for i in items[slice(*endpts)]]
-
-
+'''
 def parse_regex(token, items):
     """Parse regular expression syntax."""
     try:
@@ -91,6 +78,7 @@ def parse_regex(token, items):
     except re.error as e:
         raise RegExError(token)
     return [parse_name(i) for i in items if regex.match(i)]
+'''
 
 
 def parse_key(token):
@@ -105,28 +93,40 @@ def parse_key(token):
             # a slice object
             yield parse_slice(key)
 
+        else:
+            # a string
+            yield parse_name(key)
+
+        '''
         elif is_regex(key):
             # a RegEx pattern
             yield parse_regex(key)
+        '''
 
-        # a string
-        yield parse_name(key)
+
+def parse_number(token, items):
+    """Parse key item number or range of numbers."""
+    try:
+        endpts = [parse_index(i) for i in token.split('-', 1)]
+        if any(i for i in endpts if not (i is None or 0 < i <= len(items))):
+            raise ValueError
+    except ValueError:
+        raise KeyNumError(token)
+    if endpts[0] is not None:
+        endpts[0] -= 1
+    if len(endpts) == 1:
+        endpts = (endpts[0], endpts[0] + 1)
+    return [tuple(parse_key(i)) for i in items[slice(*endpts)]]
 
 
 def parse_keys(tokens, keys=None):
-    """Parse the key tokens.
-
-    >>> parse_keys(['asteroids.0.name', 'asteroids.2:'])
-    [['asteroids', 0, 'name'], ['asteroids', slice(2, None)]
-
-    >>> parse_keys(['1-3', '5'], keys=['red', 'blu', 'grn', 'blk', 'yel'])
-    ['red', 'blue', 'grn', 'yel']
-    """
+    """Parse the key tokens."""
     for token in tokens:
         if REGEX.number_range.match(token):
-            for keylist in parse_index(token, keys):
+            for keylist in parse_number(token, keys):
                 yield keylist
-        yield list(parse_key(token))
+        else:
+            yield tuple(parse_key(token))
 
 
 def parse_keylist(s, data=None, quotechar='"', keys=None):
@@ -134,14 +134,14 @@ def parse_keylist(s, data=None, quotechar='"', keys=None):
 
     The keys option is a preloaded list of keys; bypasses tree crawler.
 
-    >>> parse_keys('asteroids.0.name,asteroids.2:')
-    ([['asteroids', 0, 'name'], ['asteroids', slice(2, None)])
+    >>> parse_keylist('asteroids.0.name,asteroids.2:')
+    [('asteroids', 0, 'name'), ('asteroids', slice(2, None))]
 
-    >>> parse_keys('1-3,5', data={'colors': ['name': 'red', 'primary'=True]})
-    (['1-2', '3'], [['colors'], ['colors', 'name'], ['colors', 'primary']])
+    result = parse_keylist('1-3,5', keys=['red', 'blu', 'grn', 'blk', 'yel'])
+    >>> [('red',), ('blu',), ('grn',), ('yel',)]
     """
     tokens = parse_csv(s, quotechar)
     if any(REGEX.number_range.match(i) for i in tokens):
         if keys is None:
             keys = sorted(jsonkeys(data))
-    return list(parse_keys(tokens, keys))
+    return list(parse_keys(tokens, keys=keys))
