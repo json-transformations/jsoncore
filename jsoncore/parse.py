@@ -70,17 +70,6 @@ def parse_slice(token):
     return slice(*map(parse_index, token.split(':')))
 
 
-'''
-def parse_regex(token, items):
-    """Parse regular expression syntax."""
-    try:
-        regex = re.compile(token.strip('/'))
-    except re.error as e:
-        raise RegExError(token)
-    return [parse_name(i) for i in items if regex.match(i)]
-'''
-
-
 def parse_key(token):
     """Parse a key."""
     for key in REGEX.unescaped_dot.split(token):

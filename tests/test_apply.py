@@ -36,47 +36,142 @@ def test_key_funct():
     def capitalize(keys, data):
         return map_values(keys, str.upper, data)
 
-    data = {"Solar System": {
-            "planets": [{
-                "name": "Mars",
-                "moons": [{
-                    "name": "Phobos",
-                    "craters": [
-                        {"name": "Clustril", "diameter (km)": 3.4},
-                        {"name": "D'Arrest", "diameter (km)": 2.1}
-                    ]
-                }, {
-                    "name": "Deimos",
-                    "craters": [
-                        {"name": "Swift", "diameter (km)": 1},
-                        {"name": "Voltaire", "diameter (km)": 1.9}
-                    ]
-                }]}, {
-                    "name": "Jupiter",
-                    "moons": [{
-                        "name": "Amalthea",
-                        "craters": [
-                            {"name": "Gaea", "diameter (km)": 80},
-                            {"name": "Pan", "diameter (km)": 100}
-                        ]
-                    }, {
-                        "name": "Callisto",
-                        "craters": [
-                            {"name": "Adal", "diameter (km)": 41.7},
-                            {"name": "Aegir", "diameter (km)": 53.9}
-                        ]
-                    }]
-              }]}}
-    expect = {'Solar System': {'planets': [{'name': 'Mars', 'moons': [{'name':
-              'Phobos', 'craters': [{'name': 'CLUSTRIL', 'diameter (km)': 3.4},
-              {'name': "D'ARREST", 'diameter (km)': 2.1}]}, {'name': 'Deimos',
-              'craters': [{'name': 'SWIFT', 'diameter (km)': 1}, {'name':
-              'VOLTAIRE', 'diameter (km)': 1.9}]}]}, {'name': 'Jupiter',
-              'moons': [{'name': 'Amalthea', 'craters': [{'name': 'GAEA',
-              'diameter (km)': 80}, {'name': 'PAN', 'diameter (km)': 100}]},
-              {'name': 'Callisto', 'craters': [{'name': 'ADAL',
-              'diameter (km)': 41.7}, {'name': 'AEGIR', 'diameter (km)': 53.9
-              }]}]}]}}
+    data = {
+      "Solar System": {
+        "planets": [
+          {
+            "name": "Mars",
+            "moons": [
+              {
+                "name": "Phobos",
+                "craters": [
+                  {
+                    "name": "Clustril",
+                    "diameter (km)": 3.4
+                  },
+                  {
+                    "name": "D'Arrest",
+                    "diameter (km)": 2.1
+                  }
+                ]
+              },
+              {
+                "name": "Deimos",
+                "craters": [
+                  {
+                    "name": "Swift",
+                    "diameter (km)": 1
+                  },
+                  {
+                    "name": "Voltaire",
+                    "diameter (km)": 1.9
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Jupiter",
+            "moons": [
+              {
+                "name": "Amalthea",
+                "craters": [
+                  {
+                    "name": "Gaea",
+                    "diameter (km)": 80
+                  },
+                  {
+                    "name": "Pan",
+                    "diameter (km)": 100
+                  }
+                ]
+              },
+              {
+                "name": "Callisto",
+                "craters": [
+                  {
+                    "name": "Adal",
+                    "diameter (km)": 41.7
+                  },
+                  {
+                    "name": "Aegir",
+                    "diameter (km)": 53.9
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+    expect = {
+      "Solar System": {
+        "planets": [
+          {
+            "name": "Mars",
+            "moons": [
+              {
+                "name": "Phobos",
+                "craters": [
+                  {
+                    "name": "CLUSTRIL",
+                    "diameter (km)": 3.4
+                  },
+                  {
+                    "name": "D'ARREST",
+                    "diameter (km)": 2.1
+                  }
+                ]
+              },
+              {
+                "name": "Deimos",
+                "craters": [
+                  {
+                    "name": "SWIFT",
+                    "diameter (km)": 1
+                  },
+                  {
+                    "name": "VOLTAIRE",
+                    "diameter (km)": 1.9
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Jupiter",
+            "moons": [
+              {
+                "name": "Amalthea",
+                "craters": [
+                  {
+                    "name": "GAEA",
+                    "diameter (km)": 80
+                  },
+                  {
+                    "name": "PAN",
+                    "diameter (km)": 100
+                  }
+                ]
+              },
+              {
+                "name": "Callisto",
+                "craters": [
+                  {
+                    "name": "ADAL",
+                    "diameter (km)": 41.7
+                  },
+                  {
+                    "name": "AEGIR",
+                    "diameter (km)": 53.9
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
     groups = [('Solar System', 'planets'), ('moons',)]
     array = ('craters',)
     keys = [('name',)]
@@ -86,27 +181,168 @@ def test_key_funct():
 
 def test_apply_funct():
 
-    data = {"Solar System": {"planets": [{"name": "Mars", "moons": [{"name":
-        "Phobos", "craters": [{"name": "Clustril", "diameter (km)": 3.4},
-        {"name": "D'Arrest", "diameter (km)": 2.1}]}, {"name": "Deimos",
-        "craters": [{"name": "Swift", "diameter (km)": 1}, {"name": "Voltaire",
-        "diameter (km)": 1.9}]}]}, {"name": "Jupiter", "moons": [{"name":
-        "Amalthea", "craters": [{"name": "Gaea", "diameter (km)": 80}, {"name":
-        "Pan", "diameter (km)": 100}]}, {"name": "Callisto", "craters": [{
-        "name": "Adal", "diameter (km)": 41.7}, {"name": "Aegir",
-        "diameter (km)": 53.9}]}]}]}}
-    expect = {'Solar System': {'planets': [{'name': 'MARS', 'moons': [{'name':
-        'PHOBOS', 'craters': [{'name': 'CLUSTRIL', 'diameter (km)': 3.4},
-        {'name': "D'ARREST", 'diameter (km)': 2.1}]}, {'name': 'DEIMOS',
-        'craters': [{'name': 'SWIFT', 'diameter (km)': 1}, {'name': 'VOLTAIRE',
-        'diameter (km)': 1.9}]}]}, {'name': 'JUPITER', 'moons': [{'name':
-        'AMALTHEA', 'craters': [{'name': 'GAEA', 'diameter (km)': 80}, {'name':
-        'PAN', 'diameter (km)': 100}]}, {'name': 'CALLISTO', 'craters':
-        [{'name': 'ADAL', 'diameter (km)': 41.7}, {'name': 'AEGIR',
-        'diameter (km)': 53.9}]}]}]}}
-    keys = [['Solar System', 'planets', '*', 'moons', '*', 'craters', '*',
-        'name'], ['Solar System', 'planets', '*', 'moons', '*', 'name'],
-        ['Solar System', 'planets', '*', 'name']]
+    data = {
+      "Solar System": {
+        "planets": [
+          {
+            "name": "Mars",
+            "moons": [
+              {
+                "name": "Phobos",
+                "craters": [
+                  {
+                    "name": "Clustril",
+                    "diameter (km)": 3.4
+                  },
+                  {
+                    "name": "D'Arrest",
+                    "diameter (km)": 2.1
+                  }
+                ]
+              },
+              {
+                "name": "Deimos",
+                "craters": [
+                  {
+                    "name": "Swift",
+                    "diameter (km)": 1
+                  },
+                  {
+                    "name": "Voltaire",
+                    "diameter (km)": 1.9
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Jupiter",
+            "moons": [
+              {
+                "name": "Amalthea",
+                "craters": [
+                  {
+                    "name": "Gaea",
+                    "diameter (km)": 80
+                  },
+                  {
+                    "name": "Pan",
+                    "diameter (km)": 100
+                  }
+                ]
+              },
+              {
+                "name": "Callisto",
+                "craters": [
+                  {
+                    "name": "Adal",
+                    "diameter (km)": 41.7
+                  },
+                  {
+                    "name": "Aegir",
+                    "diameter (km)": 53.9
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+    expect = {
+      "Solar System": {
+        "planets": [
+          {
+            "name": "MARS",
+            "moons": [
+              {
+                "name": "PHOBOS",
+                "craters": [
+                  {
+                    "name": "CLUSTRIL",
+                    "diameter (km)": 3.4
+                  },
+                  {
+                    "name": "D'ARREST",
+                    "diameter (km)": 2.1
+                  }
+                ]
+              },
+              {
+                "name": "DEIMOS",
+                "craters": [
+                  {
+                    "name": "SWIFT",
+                    "diameter (km)": 1
+                  },
+                  {
+                    "name": "VOLTAIRE",
+                    "diameter (km)": 1.9
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "JUPITER",
+            "moons": [
+              {
+                "name": "AMALTHEA",
+                "craters": [
+                  {
+                    "name": "GAEA",
+                    "diameter (km)": 80
+                  },
+                  {
+                    "name": "PAN",
+                    "diameter (km)": 100
+                  }
+                ]
+              },
+              {
+                "name": "CALLISTO",
+                "craters": [
+                  {
+                    "name": "ADAL",
+                    "diameter (km)": 41.7
+                  },
+                  {
+                    "name": "AEGIR",
+                    "diameter (km)": 53.9
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+    keys = [
+        [
+            "Solar System",
+            "planets",
+            "*",
+            "moons",
+            "*",
+            "craters",
+            "*",
+            "name"
+        ],
+        [
+            "Solar System",
+            "planets",
+            "*",
+            "moons",
+            "*",
+            "name"
+        ],
+        [
+            "Solar System",
+            "planets",
+            "*",
+            "name"
+        ]
+    ]
 
     def map_values(keys, funct, seq):
         def apply_funct2keys(item):

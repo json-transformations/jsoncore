@@ -10,8 +10,8 @@ from operator import eq
 
 from jsoncrawl.core import JSON_TYPES, node_visitor
 
-from ._compat import map, reduce, filter, filterfalse, suppress
-from .core import WILDCARD, del_key, get_value, set_value
+from ._compat import map, suppress
+from .core import WILDCARD, get_value, set_value
 
 SUPPRESS = Exception
 
@@ -119,62 +119,3 @@ def map_values(keys, funct, seq):
         return list(seq)
 
     return apply_funct(keys, valmap, seq)
-
-
-'''
-def map_keys(keys, funct, seq):
-    """Apply function to specified keys in a JSON document."""
-    def apply_funct(key, d):
-        del_key(key, d)
-        return set_value(funct(key), get_value(key, d))
-
-    return map_items(keys, apply_funct, seq)
-
-
-def filter_items(keys, funct, seq, on_false=False):
-    """Apply function to items in a JSON document."""
-    filter = filterfalse if on_false else filter
-    for key in keys:
-        seq = filter(partial(funct, key), seq)
-    return list(seq)
-
-
-def filter_values(keys, funct, seq, on_false=False):
-    """Filter items in a JSON document by value."""
-    def apply_funct(key, d):
-        return funct(get_value(key, d))
-
-    return filter_items(keys, apply_funct, seq, on_false=on_false)
-
-
-def filter_keys(keys, funct, seq, on_false=False):
-    """Filter keys in a JSON document."""
-    def apply_funct(key, d):
-        for key in node_visitor(d):
-            if funct(key) == on_false:
-                del_key(key, d)
-        return d
-
-    return filter_items(keys, apply_funct, seq, on_false=on_false)
-
-
-def reduce_items(keys, funct, seq):
-    """Reduce key, value pairs in a JSON document."""
-    for key in keys:
-        seq = reduce(partial(funct, key), seq)
-    return list(seq)
-
-
-def reduce_values(keys, funct, seq):
-    def apply_funct(key, d):
-        return funct(get_value(key, d))
-
-    return reduce_items(keys, apply_funct, seq)
-
-
-def reduce_keys(keys, funct, seq):
-    def apply_funct(key, d):
-        return funct(key)
-
-    return reduce_items(keys, apply_funct, seq)
-'''
