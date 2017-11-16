@@ -8,20 +8,11 @@ from functools import partial
 from itertools import groupby
 from operator import eq
 
-from jsoncrawl import node_visitor
+from jsoncrawl.core import JSON_TYPES, node_visitor
 
 from ._compat import map, reduce, filter, filterfalse, suppress
 from .core import WILDCARD, del_key, get_value, set_value
 
-JSON_TYPES = {
-    dict: 'object',
-    list: 'array',
-    str: 'string',
-    int: 'number (int)',
-    float: 'number (real)',
-    bool: 'boolean',
-    type(None): 'null'
-}
 SUPPRESS = Exception
 
 ArrayKeys = namedtuple('ArrayKeys', ['arrays', 'keys'])
