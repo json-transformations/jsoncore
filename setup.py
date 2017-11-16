@@ -16,15 +16,6 @@ with open('jsoncore/__init__.py', 'rb') as f:
 with open('README.rst', 'r', encoding='utf-8') as f:
     readme = f.read()
 
-'''
-# load requirements.txt
-requirements = parse_requirements('requirements.txt', session=False)
-reqs = [str(i.req) for i in requirements]
-
-# load requirements-dev.txt
-requirements_dev = parse_requirements('requirements-dev.txt', session=False)
-reqs_dev = [str(i.req) for i in requirements_dev]
-'''
 
 setup(
     name="jsoncore",
@@ -51,7 +42,7 @@ setup(
     install_requires=[
         'click==6.7',
         'contextlib2==0.5.5',
-        'jsoncrawl',
+        'jsoncrawl==1.1',
         'toolz'
     ],
     test_suite='tests',
