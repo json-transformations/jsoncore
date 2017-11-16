@@ -2,7 +2,6 @@ import ast
 import re
 
 from setuptools import setup, find_packages
-from pip.req import parse_requirements
 
 from io import open
 
@@ -52,10 +51,4 @@ setup(
         'tox==2.9.1'
     ],
     setup_requires=['pytest-runner'],
-    entry_points={
-        'console_scripts': [
-            'jsoncore='
-            'jsoncore.cli:main']
-    },
-
 )
