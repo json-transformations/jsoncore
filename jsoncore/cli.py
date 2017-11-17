@@ -12,11 +12,11 @@ class JSONFile(click.File):
         super(JSONFile, self).__init__(**kwds)
 
     def convert(self, value, param, ctx):
-        f = super(JSONFile, self).convert(value, param, ctx)
-        if click._termui_impl.isatty(sys.stdin):
+        if value == '-' and click._termui_impl.isatty(sys.stdin):
             click.echo(ctx.get_usage())
             click.echo("Try `jsonclick --help' for more information.")
             return ''
+        f = super(JSONFile, self).convert(value, param, ctx)
         try:
             return json.load(f)
         except (json.JSONDecodeError, TypeError) as e:
@@ -30,3 +30,10 @@ class JSONFile(click.File):
                 click._compat.get_streerror(e)
             ), param, ctx)
         return ''
+
+
+def jsonfile(func):
+    @click.argument('jsonfile', type=JSONFile(), default='-')
+    def wrapper(*args, **kwargs):
+        return func(*args, **kwargs)
+    return wrapper
