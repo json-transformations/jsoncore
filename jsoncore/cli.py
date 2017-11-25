@@ -15,7 +15,7 @@ class JSONFile(click.File):
         if value == '-' and click._termui_impl.isatty(sys.stdin):
             click.echo(ctx.get_usage())
             click.echo("Try `jsonclick --help' for more information.")
-            return ''
+            return
         f = super(JSONFile, self).convert(value, param, ctx)
         try:
             return json.load(f)
@@ -29,11 +29,17 @@ class JSONFile(click.File):
                 click._compat.filename_to_ui(value),
                 click._compat.get_streerror(e)
             ), param, ctx)
-        return ''
+        return
 
 
-def jsonfile(func):
-    @click.argument('jsonfile', type=JSONFile(), default='-')
-    def wrapper(*args, **kwargs):
-        return func(*args, **kwargs)
-    return wrapper
+jsonfile = click.argument(
+    'jsonfile', type=JSONFile(), default='-'
+)
+rootkey = click.option(
+    '-r', '--root',
+    help='Set the root of the JSON document before processing'
+)
+result = click.option(
+    '-R', '--result',
+    help='Select the result of the JSON document after processing'
+)
