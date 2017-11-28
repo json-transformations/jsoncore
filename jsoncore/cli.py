@@ -18,7 +18,8 @@ class JSONFile(click.File):
     def convert(self, value, param, ctx):
         if value == '-' and click._termui_impl.isatty(sys.stdin):
             click.echo(ctx.get_usage())
-            click.echo("Try `{} --help' for more information.".format(self.package))
+            click.echo("Try `%s --help' for more information." % "hello")
+            click.echo(ctx.command.name)
             return ''
         f = super(JSONFile, self).convert(value, param, ctx)
         try:
@@ -34,6 +35,7 @@ class JSONFile(click.File):
                 click._compat.get_streerror(e)
             ), param, ctx)
         return ''
+
 
 def jsonfile(package=None):
     def decorator(func):
