@@ -14,7 +14,7 @@ class JSONFile(click.File):
     def convert(self, value, param, ctx):
         if value == '-' and click._termui_impl.isatty(sys.stdin):
             click.echo(ctx.get_usage())
-            click.echo("Try `jsonclick --help' for more information.")
+            click.echo("Try `%s --help' for more information." % ctx.command.name)
             return
         f = super(JSONFile, self).convert(value, param, ctx)
         try:
