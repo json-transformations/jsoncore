@@ -4,7 +4,7 @@ import sys
 import click
 import click._termui_impl
 
-from .core import get_value
+from .core import get_keys, get_value
 from .parse import parse_keys
 
 
@@ -45,13 +45,13 @@ def get_root(ctx, param, value):
     return data
 
 
-jsonfile = argument(
+jsonfile = click.argument(
     'jsonfile', type=JSONFile(), default='-', is_eager=True
 )
-optional_jsonfile = argument(
+optional_jsonfile = click.argument(
     'jsonfile', type=JSONFile(), default='-', required=False, is_eager=True
 )
-rootkey = option(
+rootkey = click.option(
     '-r', '--root', callback=get_root, help='Set the root of the JSON document'
 )
 result = click.option(
