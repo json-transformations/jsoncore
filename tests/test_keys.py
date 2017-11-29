@@ -1,3 +1,4 @@
+'''
 from jsoncore.jsonfuncts import jsonkeys
 
 
@@ -6,3 +7,4 @@ def test_jsonkeys():
     expect = {('status',), ('message', 'affenpinscher'), (), ('message',)}
     result = jsonkeys(data)
     assert expect == result
+'''

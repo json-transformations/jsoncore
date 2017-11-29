@@ -1,7 +1,6 @@
 from copy import deepcopy
 
 from jsoncore.core import del_key
-from jsoncore.jsonfuncts import jsondel
 
 SAMPLE_DATA = {
   "source": {

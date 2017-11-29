@@ -2,7 +2,7 @@ import json
 import os
 
 from jsoncore._compat import text_type
-from jsoncore.mapreducefilter import map_values
+from jsoncore.functional import map_values
 
 MODULE_PATH = os.path.dirname(os.path.realpath(__file__))
 

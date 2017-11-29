@@ -1,4 +1,4 @@
-from jsoncore.mapreducefilter import (
+from jsoncore.functional import (
     apply_funct, group_array_keys, key_funct, splitlist
 )
 from jsoncore.core import get_value, set_value
