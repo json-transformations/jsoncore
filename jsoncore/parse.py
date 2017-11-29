@@ -3,8 +3,8 @@ import re
 from collections import namedtuple
 
 from ._compat import StringIO, suppress
-from .keys import jsonkeys
-from .errors import RegExError, KeyNumError
+from .errors import KeyNumError
+from .core import get_keys
 
 
 REGEXES = {
@@ -132,5 +132,5 @@ def parse_keylist(s, data=None, quotechar='"', keys=None):
     tokens = parse_csv(s, quotechar)
     if any(REGEX.number_range.match(i) for i in tokens):
         if keys is None:
-            keys = sorted(jsonkeys(data))
+            keys = [i.stripi('.*') for i in get_keys(data)]
     return list(parse_keys(tokens, keys=keys))
