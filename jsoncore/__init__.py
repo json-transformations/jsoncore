@@ -1,3 +1,17 @@
-"""jsoncore - Package description."""
+from .cli import (
+    JSONFile, get_root, jsonfile, optional_jsonfile, rootkey, result
+)
+from .core import (
+    WILDCARD, SEPARATOR, SUPPRESS,
+    del_key, get_item, get_keys, get_nodes, get_parent, get_uniq_nodes,
+    get_value, join_keys, set_value
+)
+from .jsonfuncts import (
+    jsondel, jsonget, jsongetitem, jsonset, jsonnodes, jsonkeys,
+    jsonvalues, jsonitems
+)
+from .errors import RegExError, KeyNumError
+from .functional import apply_funct, map_item, map_values
+from .parse import parse_keylist, parse_keys
 
-__version__ = '0.5'
+__version__ = '0.6'
