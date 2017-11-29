@@ -41,14 +41,14 @@ setup(
     install_requires=[
         'click==6.7',
         'contextlib2==0.5.5',
-        'jsoncrawl==1.1',
-        'toolz'
+        'jsoncrawl==1.2',
+        'toolz==0.8.2'
     ],
     test_suite='tests',
     test_requires=[
-        'pytest-cov==2.5.1',
-        'flake8==3.5.0',
-        'tox==2.9.1'
+        'pytest-cov>=2.5.1',
+        'flake8>=3.5.0',
+        'tox>=2.9.1'
     ],
     setup_requires=['pytest-runner'],
 )

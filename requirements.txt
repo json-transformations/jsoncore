@@ -1,4 +1,4 @@
 click==6.7
 contextlib2==0.5.5
-jsoncrawl==1.1
+jsoncrawl==1.2
 toolz==0.8.2
