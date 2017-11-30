@@ -3,8 +3,8 @@ from .cli import (
 )
 from .core import (
     WILDCARD, SEPARATOR, SUPPRESS,
-    del_key, get_item, get_keys, get_nodes, get_parent, get_uniq_nodes,
-    get_value, join_keys, set_value
+    del_key, get_item, get_keys, get_keystrings, get_nodes, get_parent,
+    get_value, join_keys, set_value, uniq_nodes
 )
 from .jsonfuncts import (
     jsondel, jsonget, jsongetitem, jsonset, jsonnodes, jsonkeys,
@@ -14,4 +14,4 @@ from .errors import RegExError, KeyNumError
 from .functional import apply_funct, map_item, map_values
 from .parse import parse_keylist, parse_keys
 
-__version__ = '0.6'
+__version__ = '0.6.1'

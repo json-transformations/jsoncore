@@ -36,12 +36,15 @@ wildcard
     set to None then each array element is returned. By default it is
     the splat character, but it's configurable since in regular
     expressions the character has special meaning. In these instances a
-    hash symbol would be a better choice to eliminate the need to escape wildcard characters in regular expressions.  Note: Regular
+    hash symbol would be a better choice to eliminate the need to escape
+    wildcard characters in regular expressions.  Note: Regular
     expression syntax for JSON Keys is not currently supported, but
     there is a plan to include it in future versions.
 
 """
 from operator import getitem
+
+from toolz import curry
 
 from jsoncrawl.core import Node, node_visitor
 
@@ -116,18 +119,11 @@ def get_item(keylist, d, default=None, fullpath=False, ignore=SUPPRESS):
     return key, default
 
 
-def join_keys(node, separator=SEPARATOR, wildcard=WILDCARD):
-    """Return key names separated by dots; add wildcard tail to arrays.
-
-    Returns a key string separated by the `separator` character;
-    appends a wildcard symbol to keys that point to arrays.  This allows
-    the location of arrays in the JSON data to be identified by simply
-    looking at the resulting key strings.
-    """
-    keys = node.keys
-    if node.dtype == 'array':
-        keys.append(wildcard)
-    return separator.join(map(str, keys))
+@curry
+def wildcard_to_array(node, wildcard='*'):
+    if node.keys[-1:] == wildcard:
+        return 'array'
+    return node.dtype
 
 
 def get_nodes(d, wildcard=WILDCARD):
@@ -139,34 +135,46 @@ def get_nodes(d, wildcard=WILDCARD):
         * `dtype` is the JSON data type.
     """
     visited = node_visitor(d, arrays=True, element_ch=wildcard)
-    nodes = filter(lambda x: x.keys is not None, visited)
-    keys = map(join_keys, nodes)
-    types = ('array' if i.keys.endswith(wildcard) else i.dtype for i in keys)
-    return zip(keys, (i.val for i in nodes), types)
+    nodes = (i for i in visited if i.keys is not None)
+    result = (Node(tuple(i.keys), i.val, i.dtype) for i in nodes)
+    return result
 
 
-def get_uniq_nodes(d, wildcard=WILDCARD):
-    """Given JSON data; generate a unique, sorted sequence of nodes.
+def uniq_nodes(d, wildcard=WILDCARD):
+    uniq = {i.keys: i for i in  get_nodes(d, wildcard=wildcard)}
+    return uniq.values()
 
-    Returns namedtuples Node(keys, val, dtype) sorted on keys where ...
+
+def get_keys(d, wildcard=WILDCARD):
+    """Given JSON data; return a unique, sorted list of keys.
+
+    Returns Node(keys, val, dtype) namedtuples
+    sorted on keys where ...
         * `keys` are unique keystrings
         * `val` is the node's value
         * `dtype` is the JSON data type.
     """
-    nodes = get_nodes(d, wildcard=wildcard)
-    uniq = {i[0]: Node(i) for i in nodes}
-    return sorted(uniq.values(), key=lambda x: x.keys)
+    nodes = uniq_nodes(d, wildcard=wildcard)
+    keys = sorted({i.keys for i in nodes})
+    return keys
 
 
-def _get_keylist(node):
-    return tuple(node.keys)
+def join_keys(node, separator=SEPARATOR, wildcard=WILDCARD):
+    """Return key names separated by dots; tail a wildcard for arrays.
 
-
-def get_keys(d, wildcard=WILDCARD):
-    """Return a sorted sequence of unique keys found in the JSON data.
-
-    Returns the key strings in attribute style notation with wildcards
-    indicating the location of arrays.
+    Returns a keystring composed of keys in the keylist separated by the
+    `separator` characters; also appends a `wildcard` character to any
+    keystring that point to an array.  This allows the location of
+    arrays in the JSON data to be identified by looking solely at the
+    keystrings.
     """
-    nodes = get_uniq_nodes(d, wildcard=wildcard)
-    return map(_get_keylist, nodes)
+    keys = node.keys
+    if node.dtype == 'array':
+        keys.append(wildcard)
+    return separator.join(map(str, keys))
+
+
+def get_keystrings(d, wildcard=WILDCARD):
+    """Given JSON data; generate a unique, sorted list of keystrings."""
+    keys = get_keys(d, wildcard=wildcard)
+    return map(join_keys, keys)
