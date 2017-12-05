@@ -48,6 +48,9 @@ def get_root(ctx, param, value):
 jsonfile = click.argument(
     'jsonfile', type=JSONFile(), default='-', is_eager=True
 )
+jsonfiles = click.argument(
+    'jsonfile', nargs=-1, type=JSONFile(), default='-', is_eager=True
+)
 optional_jsonfile = click.argument(
     'jsonfile', type=JSONFile(), default='-', required=False, is_eager=True
 )

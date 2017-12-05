@@ -126,6 +126,22 @@ def wildcard_to_array(node, wildcard='*'):
     return node.dtype
 
 
+@curry
+def join_keys(node, separator=SEPARATOR, wildcard=WILDCARD):
+    """Return key names separated by dots; tail a wildcard for arrays.
+
+    Returns a keystring composed of keys in the keylist separated by the
+    `separator` characters; also appends a `wildcard` character to any
+    keystring that point to an array.  This allows the location of
+    arrays in the JSON data to be identified by looking solely at the
+    keystrings.
+    """
+    keys = node.keys
+    if node.dtype == 'array':
+        keys.append(wildcard)
+    return separator.join(map(str, keys))
+
+
 def get_nodes(d, wildcard=WILDCARD):
     """Given JSON data; generate a sequence of nodes.
 
@@ -141,7 +157,7 @@ def get_nodes(d, wildcard=WILDCARD):
 
 
 def uniq_nodes(d, wildcard=WILDCARD):
-    uniq = {i.keys: i for i in  get_nodes(d, wildcard=wildcard)}
+    uniq = {i.keys: i for i in get_nodes(d, wildcard=wildcard)}
     return uniq.values()
 
 
@@ -159,22 +175,7 @@ def get_keys(d, wildcard=WILDCARD):
     return keys
 
 
-def join_keys(node, separator=SEPARATOR, wildcard=WILDCARD):
-    """Return key names separated by dots; tail a wildcard for arrays.
-
-    Returns a keystring composed of keys in the keylist separated by the
-    `separator` characters; also appends a `wildcard` character to any
-    keystring that point to an array.  This allows the location of
-    arrays in the JSON data to be identified by looking solely at the
-    keystrings.
-    """
-    keys = node.keys
-    if node.dtype == 'array':
-        keys.append(wildcard)
-    return separator.join(map(str, keys))
-
-
-def get_keystrings(d, wildcard=WILDCARD):
+def get_keystrings(d, separator=SEPARATOR, wildcard=WILDCARD):
     """Given JSON data; generate a unique, sorted list of keystrings."""
     keys = get_keys(d, wildcard=wildcard)
-    return map(join_keys, keys)
+    return map(join_keys(separator=SEPARATOR), keys)

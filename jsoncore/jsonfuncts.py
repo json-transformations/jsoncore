@@ -5,14 +5,14 @@ from toolz import curry
 from jsoncrawl import node_visitor
 
 from .core import (
-    WILDCARD, SUPPRESS, del_key, get_item, get_keys, get_nodes,
-    get_value, set_value
+    WILDCARD, SEPARATOR, SUPPRESS, del_key, get_item, get_keys, get_nodes,
+    get_value, join_keys, set_value
 )
 from .parse import parse_keys
 from .sequence import is_seq_and_not_str
 
 
-def key_parser(func):
+def key_parser(func, wildcard=WILDCARD, separator=SEPARATOR):
     @wraps(func)
     def wrapper(keys, *args, **kwds):
         if not is_seq_and_not_str(keys):
