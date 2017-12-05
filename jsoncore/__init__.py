@@ -14,4 +14,4 @@ from .errors import RegExError, KeyNumError
 from .functional import apply_funct, map_item, map_values
 from .parse import parse_keylist, parse_keys
 
-__version__ = '0.6.1'
+__version__ = '0.6.2'

@@ -13,4 +13,10 @@ Initial release.
 0.6.1
 -----
 
-Fixed get_keys
+Fixed get_keys.
+
+0.6.2 (2017-12-04)
+------------------
+
+Added support for a custom separator character when joining keys in
+JSON key selectors.
