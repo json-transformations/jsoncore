@@ -60,7 +60,7 @@ def jsonitems(d, wildcard=WILDCARD):
 
 def jsonkeys(d, wildcard=WILDCARD):
     """Given JSON data; yield each keystring in sort order."""
-    for key in get_keys(d, wildcard=WILDCARD):
+    for key in get_keystrings(d, wildcard=WILDCARD):
         yield key
 
 
