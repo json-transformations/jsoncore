@@ -18,4 +18,4 @@ from jsoncat import (
     JSONFile, encoding_option, indent_option, jsonfile_arg, jsonfiles_arg
 )
 
-__version__ = '0.6.5'
+__version__ = '0.6.6'
