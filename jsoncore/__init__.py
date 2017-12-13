@@ -14,8 +14,8 @@ from .errors import RegExError, KeyNumError
 from .functional import apply_funct, map_item, map_values
 from .parse import parse_keylist, parse_keys
 
-from jsoncat_tool.cli import (
+from jsoncat import (
     JSONFile, encoding_option, indent_option, jsonfiles_arg
 )
 
-__version__ = '0.6.2'
+__version__ = '0.6.4'
