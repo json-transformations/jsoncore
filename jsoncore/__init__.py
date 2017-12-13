@@ -4,7 +4,7 @@ from .cli import (
 from .core import (
     WILDCARD, SEPARATOR, SUPPRESS,
     del_key, get_item, get_keys, get_keystrings, get_nodes, get_parent,
-    get_value, join_keys, set_value, uniq_nodes
+    get_value, join_keys, set_value, uniq_nodes, optional_jsonfile
 )
 from .jsonfuncts import (
     jsondel, jsonget, jsongetitem, jsonset, jsonnodes, jsonkeys,
@@ -15,7 +15,7 @@ from .functional import apply_funct, map_item, map_values
 from .parse import parse_keylist, parse_keys
 
 from jsoncat import (
-    JSONFile, encoding_option, indent_option, jsonfiles_arg
+    JSONFile, encoding_option, indent_option, jsonfile_arg, jsonfiles_arg
 )
 
-__version__ = '0.6.4'
+__version__ = '0.6.5'

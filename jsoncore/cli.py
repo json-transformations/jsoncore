@@ -15,9 +15,6 @@ def get_root(ctx, param, value):
     return data
 
 
-jsonfile = click.argument(
-    'jsonfile', type=JSONFile(), default='-'
-)
 optional_jsonfile = click.argument(
     'jsonfile', type=JSONFile(), required=False
 )
