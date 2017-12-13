@@ -1,5 +1,5 @@
 from .cli import (
-    JSONFile, get_root, optional_jsonfile, rootkey, result
+    get_root, optional_jsonfile, rootkey, result
 )
 from .core import (
     WILDCARD, SEPARATOR, SUPPRESS,
@@ -18,4 +18,4 @@ from jsoncat import (
     JSONFile, encoding_option, indent_option, jsonfile_arg, jsonfiles_arg
 )
 
-__version__ = '0.6.6'
+__version__ = '0.6.7'
