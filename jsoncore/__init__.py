@@ -4,7 +4,7 @@ from .cli import (
 from .core import (
     WILDCARD, SEPARATOR, SUPPRESS,
     del_key, get_item, get_keys, get_keystrings, get_nodes, get_parent,
-    get_value, join_keys, set_value, uniq_nodes, optional_jsonfile
+    get_value, join_keys, set_value, uniq_nodes
 )
 from .jsonfuncts import (
     jsondel, jsonget, jsongetitem, jsonset, jsonnodes, jsonkeys,
@@ -18,4 +18,4 @@ from jsoncat import (
     JSONFile, encoding_option, indent_option, jsonfile_arg, jsonfiles_arg
 )
 
-__version__ = '0.6.7'
+__version__ = '0.6.8'
