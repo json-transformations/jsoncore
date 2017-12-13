@@ -41,6 +41,7 @@ setup(
     install_requires=[
         'click==6.7',
         'contextlib2==0.5.5',
+        'jsoncat-tool==0.8.2',
         'jsoncrawl==1.2',
         'toolz==0.8.2'
     ],
