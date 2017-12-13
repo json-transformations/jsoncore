@@ -1,5 +1,5 @@
 from .cli import (
-    JSONFile, get_root, jsonfile, optional_jsonfile, rootkey, result
+    JSONFile, get_root, optional_jsonfile, rootkey, result
 )
 from .core import (
     WILDCARD, SEPARATOR, SUPPRESS,
