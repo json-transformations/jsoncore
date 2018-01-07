@@ -6,7 +6,7 @@ from jsoncrawl import node_visitor
 
 from .core import (
     WILDCARD, SEPARATOR, SUPPRESS, del_key, get_item, get_keys, get_nodes,
-    get_value, join_keys, set_value
+    get_value, join_keys, set_value, get_keystrings
 )
 from .parse import parse_keys
 from .sequence import is_seq_and_not_str

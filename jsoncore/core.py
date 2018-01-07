@@ -179,3 +179,19 @@ def get_keystrings(d, separator=SEPARATOR, wildcard=WILDCARD):
     """Given JSON data; generate a unique, sorted list of keystrings."""
     keys = get_keys(d, wildcard=wildcard)
     return map(join_keys(separator=SEPARATOR), keys)
+
+
+def format_json(data, compact=False, indent=2):
+    """
+    Format Dict to JSON.
+
+    Args:
+        data (dict): python dict
+        compact (boolean): non-indended output
+        indent (int): set indenting for compact=False mode
+
+    Returns:
+        data formatted to json-serialized content
+    """
+    separators = (',', ':') if compact else None
+    return json.dumps(data, indent=indent, separators=separators)
